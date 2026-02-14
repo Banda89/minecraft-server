@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: mcdb
+      POSTGRES_USER: mcuser
+      POSTGRES_PASSWORD: mcpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mcdb
+      SPRING_DATASOURCE_USERNAME: mcuser
+      SPRING_DATASOURCE_PASSWORD: mcpass
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  minecraft:
+    build:
+      context: ./minecraft
+      dockerfile: Dockerfile
+    volumes:
+      - ./minecraft/data:/data
+    ports:
+      - "25565:25565"
+
+volumes:
+  postgres_data:

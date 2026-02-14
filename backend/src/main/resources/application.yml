@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mcdb
+    username: mcuser
+    password: mcpass
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
